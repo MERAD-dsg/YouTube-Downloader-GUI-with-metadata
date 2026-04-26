@@ -14,11 +14,6 @@ A beautiful and user-friendly GUI implementation of yt-dlp, featuring a sleek pr
 
 ---
 
-## Language Selection / Выбор языка / 语言
-[Русский](#russian) | [中文](#chinese) | [Українська](#ukrainian) | [Español](#spanish) | [Deutsch](#german) | [हिन्दी](#hindi) | [日本語](#japanese) | [Türkçe](#turkish) | [Tagalog](#tagalog)
-
----
-
 ## 🇷🇺 Russian (Русский) <a name="russian"></a>
 **Лучший загрузчик видео с YouTube.**
 
@@ -35,7 +30,7 @@ A beautiful and user-friendly GUI implementation of yt-dlp, featuring a sleek pr
 
 ---
 
-## Other Languages
+## Language Selection / Выбор языка / 语言
 
 <details>
 <summary><b>🇨🇳 Chinese (简体中文)</b></summary>
