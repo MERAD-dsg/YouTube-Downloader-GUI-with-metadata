@@ -1,12 +1,22 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="YT_DLP_GUI.Properties" GeneratedClassName="Settings">
-  <Profiles />
+<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)" GeneratedClassNamespace="YT_DLP_GUI.Properties" GeneratedClassName="Settings">
+  <Profiles>
+    <Profile Name="(Default)" />
+  </Profiles>
   <Settings>
+    <!-- Уже существующие настройки (не трогаем) -->
     <Setting Name="lang" Type="System.String" Scope="User">
-      <Value Profile="(Default)">en</Value>
+      <Value Profile="(Default)"></Value>
     </Setting>
     <Setting Name="savedFolder" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)"></Value>
+    </Setting>
+
+    <!-- ──────────────────────────────────────────────── -->
+    <!-- НОВОЕ: сохранять состояние чекбокса метаданных  -->
+    <!-- ──────────────────────────────────────────────── -->
+    <Setting Name="embedMetadata" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

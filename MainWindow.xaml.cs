@@ -38,7 +38,6 @@ namespace YT_DLP_GUI
                 var resourceName = $"YT_DLP_GUI.loc.{language}.json";
 
                 using Stream stream = assembly.GetManifestResourceStream(resourceName);
-
                 if (stream == null)
                 {
                     Properties.Settings.Default.lang = "en";
@@ -48,6 +47,7 @@ namespace YT_DLP_GUI
                 using StreamReader reader = new StreamReader(stream);
                 var jsonContent = reader.ReadToEnd();
                 var localizationData = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, string>>>>>(jsonContent);
+
                 if (localizationData != null &&
                     localizationData.ContainsKey("categories") &&
                     localizationData["categories"].ContainsKey("loc") &&
@@ -76,48 +76,21 @@ namespace YT_DLP_GUI
                 {
                     "zh-tw" or "zh-hk" or "zh-mo" => "tw",
                     "zh-cn" or "zh-sg" or "zh-chs" => "zh",
-
                     _ => isoLang switch
                     {
-                        "uk" => "uk",
-                        "be" => "be",
-                        "kk" => "kk",
-                        "uz" => "uz",
-                        "tk" => "tk",
-                        "ky" => "ky",
-                        "tg" => "tg",
-                        "az" => "az",
-                        "hy" => "hy",
-                        "ka" => "ka",
-                        "bg" => "bg",
-                        "ro" => "ro",
-                        "pl" => "pl",
-                        "cs" => "cs",
-                        "sk" => "sk",
-                        "hu" => "hu",
-                        "el" => "el",
-                        "lv" => "lv",
-                        "lt" => "lt",
-                        "et" => "et",
-                        "fi" => "fi",
-                        "de" => "de",
-                        "fr" => "fr",
-                        "es" => "es",
-                        "it" => "it",
-                        "pt" => "pt",
-                        "tr" => "tr",
-                        "ja" => "ja",
-                        "ko" => "ko",
-                        "vi" => "vi",
-                        "id" => "id",
-                        "tl" => "tl",
-                        "fil" => "tl",
-                        "hi" => "hi",
-                        "th" => "th",
-                        "ru" => "ru",
+                        "uk" => "uk", "be" => "be", "kk" => "kk", "uz" => "uz",
+                        "tk" => "tk", "ky" => "ky", "tg" => "tg", "az" => "az",
+                        "hy" => "hy", "ka" => "ka", "bg" => "bg", "ro" => "ro",
+                        "pl" => "pl", "cs" => "cs", "sk" => "sk", "hu" => "hu",
+                        "el" => "el", "lv" => "lv", "lt" => "lt", "et" => "et",
+                        "fi" => "fi", "de" => "de", "fr" => "fr", "es" => "es",
+                        "it" => "it", "pt" => "pt", "tr" => "tr", "ja" => "ja",
+                        "ko" => "ko", "vi" => "vi", "id" => "id", "tl" => "tl",
+                        "fil" => "tl", "hi" => "hi", "th" => "th", "ru" => "ru",
                         _ => "en"
                     }
                 };
+
                 Properties.Settings.Default.Save();
             }
 
@@ -129,7 +102,16 @@ namespace YT_DLP_GUI
                 Properties.Settings.Default.savedFolder = defaultPath;
                 Properties.Settings.Default.Save();
             }
+
             SavePathTextBox.Text = Properties.Settings.Default.savedFolder;
+
+            // Восстанавливаем состояние чекбокса метаданных из настроек
+            EmbedMetadataCheckBox.IsChecked = Properties.Settings.Default.embedMetadata;
+
+            // Сохраняем при изменении
+            EmbedMetadataCheckBox.Checked   += (s, e) => { Properties.Settings.Default.embedMetadata = true;  Properties.Settings.Default.Save(); };
+            EmbedMetadataCheckBox.Unchecked += (s, e) => { Properties.Settings.Default.embedMetadata = false; Properties.Settings.Default.Save(); };
+
             clipboardTimer = new DispatcherTimer();
             clipboardTimer.Interval = TimeSpan.FromSeconds(1);
             clipboardTimer.Tick += CheckClipboardText;
@@ -141,24 +123,28 @@ namespace YT_DLP_GUI
             try
             {
                 locMain = Localization.LoadLocalization(langCode, "main");
-                locGui = Localization.LoadLocalization(langCode, "gui");
+                locGui  = Localization.LoadLocalization(langCode, "gui");
 
-                UrlLabel.Text = locGui["videolink"];
+                UrlLabel.Text  = locGui["videolink"];
                 SaveLabel.Text = locGui["savelocation"];
                 ModeLabel.Text = locGui["savemode"];
                 OptionsLabel.Text = locGui["options"];
-
                 RadioVideo.Content = locGui["video"];
                 RadioAudio.Content = locGui["audio"];
-
                 VideoOnlyCheckBox.Content = locGui["onlyvideo"];
-                BrowseButton.Content = locGui["browse"];
+                BrowseButton.Content    = locGui["browse"];
                 OpenFolderButton.Content = locGui["open"];
-                settingsButton.Label = locGui["set"];
+                settingsButton.Label    = locGui["set"];
+
+                // Локализация метки чекбокса метаданных
+                // Если ключ есть в словаре — используем его, иначе — русский по умолчанию
+                MetadataLabel.Text = locGui.ContainsKey("embedmetadata")
+                    ? locGui["embedmetadata"]
+                    : "Добавить метаданные (обложка, название, автор)";
 
                 if (!isDownloading)
                 {
-                    StatusTextBlock.Text = locMain["status_main"];
+                    StatusTextBlock.Text   = locMain["status_main"];
                     DownloadButton.Content = locGui["button_start"];
                 }
                 else
@@ -174,38 +160,31 @@ namespace YT_DLP_GUI
         private bool IsYouTubeUrl(string url)
         {
             if (string.IsNullOrWhiteSpace(url)) return false;
-
             url = url.ToLower().Trim();
             return url.StartsWith("https://www.youtube.com/") ||
-                   url.StartsWith("https://youtube.com/") ||
-                   url.StartsWith("https://youtu.be/") ||
-                   url.StartsWith("http://www.youtube.com/") ||
-                   url.StartsWith("http://youtube.com/") ||
-                   url.StartsWith("http://youtu.be/");
+                   url.StartsWith("https://youtube.com/")     ||
+                   url.StartsWith("https://youtu.be/")        ||
+                   url.StartsWith("http://www.youtube.com/")  ||
+                   url.StartsWith("http://youtube.com/")      ||
+                   url.StartsWith("http://youtu.be/")         ||
+                   // ─── поддержка YouTube Music ───────────────────────────
+                   url.StartsWith("https://music.youtube.com/") ||
+                   url.StartsWith("http://music.youtube.com/");
         }
 
         private void CheckClipboardText(object sender, EventArgs e)
         {
             bool showPasteButton = false;
-
             try
             {
                 if (Clipboard.ContainsText())
                 {
                     string txt = Clipboard.GetText().Trim();
-
-                    if (IsYouTubeUrl(txt))
-                    {
-                        if (UrlTextBox.Text.Trim() != txt)
-                        {
-                            showPasteButton = true;
-                        }
-                    }
+                    if (IsYouTubeUrl(txt) && UrlTextBox.Text.Trim() != txt)
+                        showPasteButton = true;
                 }
             }
-            catch
-            {
-            }
+            catch { }
 
             PasteButton.Visibility = showPasteButton ? Visibility.Visible : Visibility.Collapsed;
         }
@@ -227,16 +206,13 @@ namespace YT_DLP_GUI
             OperationProgressBar.IsIndeterminate = false;
 
             string url = UrlTextBox.Text.Trim();
-
             if (IsYouTubeUrl(url))
             {
                 PreviewPanel.Visibility = Visibility.Visible;
                 PreviewTitle.Text = locMain.ContainsKey("status_info") ? locMain["status_info"] : "Загрузка информации о видео...";
                 PreviewImage.Source = null;
-
                 currentMaxHeight = 2160;
                 UpdateComboBoxItems();
-
                 await LoadVideoInfoAsync(url);
             }
             else
@@ -258,7 +234,6 @@ namespace YT_DLP_GUI
                     CreateNoWindow = true,
                     StandardOutputEncoding = System.Text.Encoding.UTF8
                 };
-
                 info.EnvironmentVariables["PYTHONIOENCODING"] = "utf-8";
                 info.EnvironmentVariables["PYTHONUTF8"] = "1";
 
@@ -273,11 +248,11 @@ namespace YT_DLP_GUI
                         {
                             using (JsonDocument doc = JsonDocument.Parse(output))
                             {
-                                string title = doc.RootElement.TryGetProperty("title", out var titleElement) ? titleElement.GetString() : (locMain.ContainsKey("status_noname") ? locMain["status_noname"] : "Неизвестное название");
-                                string channel = doc.RootElement.TryGetProperty("uploader", out var uploaderElement) ? uploaderElement.GetString() : "";
-                                string thumbUrl = doc.RootElement.TryGetProperty("thumbnail", out var thumbElement) ? thumbElement.GetString() : "";
-                                int maxRes = 0;
+                                string title   = doc.RootElement.TryGetProperty("title",    out var titleEl)    ? titleEl.GetString()    : (locMain.ContainsKey("status_noname") ? locMain["status_noname"] : "Неизвестное название");
+                                string channel = doc.RootElement.TryGetProperty("uploader", out var uploaderEl) ? uploaderEl.GetString() : "";
+                                string thumbUrl = doc.RootElement.TryGetProperty("thumbnail", out var thumbEl)  ? thumbEl.GetString()    : "";
 
+                                int maxRes = 0;
                                 if (doc.RootElement.TryGetProperty("formats", out var formats))
                                 {
                                     foreach (var format in formats.EnumerateArray())
@@ -302,16 +277,12 @@ namespace YT_DLP_GUI
                                     {
                                         PreviewTitle.Inlines.Add(new System.Windows.Documents.LineBreak());
                                         var channelRun = new System.Windows.Documents.Run(channel);
-                                        channelRun.FontSize = PreviewTitle.FontSize + 4;
+                                        channelRun.FontSize   = PreviewTitle.FontSize + 4;
                                         channelRun.FontWeight = FontWeights.SemiBold;
                                         PreviewTitle.Inlines.Add(channelRun);
                                     }
 
-                                    if (maxRes > 0)
-                                    {
-                                        currentMaxHeight = maxRes;
-                                        UpdateComboBoxItems();
-                                    }
+                                    if (maxRes > 0) { currentMaxHeight = maxRes; UpdateComboBoxItems(); }
 
                                     if (!string.IsNullOrEmpty(thumbUrl))
                                     {
@@ -366,8 +337,8 @@ namespace YT_DLP_GUI
             }
             else
             {
-                string errTitle = locMain.ContainsKey("error") ? locMain["error"] : "Ошибка";
-                string errMsg = locMain.ContainsKey("error3") ? locMain["error3"] : "Указанная папка не существует.";
+                string errTitle = locMain.ContainsKey("error")  ? locMain["error"]  : "Ошибка";
+                string errMsg   = locMain.ContainsKey("error3") ? locMain["error3"] : "Указанная папка не существует.";
                 MessageBox.Show(errMsg, errTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
@@ -394,16 +365,9 @@ namespace YT_DLP_GUI
             {
                 ComboLabel.Text = locGui.ContainsKey("quality") ? locGui["quality"] : "Качество:";
                 SettingsComboBox.Items.Add(new ComboBoxItem { Content = locGui.ContainsKey("max") ? locGui["max"] : "Максимальное", Tag = "max" });
-
-                if (currentMaxHeight >= 2160)
-                    SettingsComboBox.Items.Add(new ComboBoxItem { Content = "4K", Tag = "4k" });
-
-                if (currentMaxHeight >= 1080)
-                    SettingsComboBox.Items.Add(new ComboBoxItem { Content = "1080p", Tag = "1080" });
-
-                if (currentMaxHeight >= 720)
-                    SettingsComboBox.Items.Add(new ComboBoxItem { Content = "720p", Tag = "720" });
-
+                if (currentMaxHeight >= 2160) SettingsComboBox.Items.Add(new ComboBoxItem { Content = "4K",    Tag = "4k"   });
+                if (currentMaxHeight >= 1080) SettingsComboBox.Items.Add(new ComboBoxItem { Content = "1080p", Tag = "1080" });
+                if (currentMaxHeight >= 720)  SettingsComboBox.Items.Add(new ComboBoxItem { Content = "720p",  Tag = "720"  });
                 SettingsComboBox.SelectedIndex = 0;
                 OptionsPanel.Visibility = Visibility.Visible;
             }
@@ -430,7 +394,6 @@ namespace YT_DLP_GUI
                     }
                 }
                 catch { }
-
                 ResetUiState();
                 return;
             }
@@ -438,7 +401,7 @@ namespace YT_DLP_GUI
             string url = UrlTextBox.Text.Trim();
             if (string.IsNullOrEmpty(url))
             {
-                string errTitle = locMain.ContainsKey("error") ? locMain["error"] : "Ошибка";
+                string errTitle = locMain.ContainsKey("error")       ? locMain["error"]       : "Ошибка";
                 string errPaste = locMain.ContainsKey("pastefirst") ? locMain["pastefirst"] : "Пожалуйста, вставьте ссылку на YouTube.";
                 MessageBox.Show(errPaste, errTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -446,7 +409,6 @@ namespace YT_DLP_GUI
 
             string saveDir = SavePathTextBox.Text.Trim();
             if (string.IsNullOrEmpty(saveDir)) return;
-
             if (!Directory.Exists(saveDir))
             {
                 try { Directory.CreateDirectory(saveDir); }
@@ -459,12 +421,24 @@ namespace YT_DLP_GUI
             OperationProgressBar.Value = 0;
             StatusTextBlock.Text = locMain.ContainsKey("status_preparing") ? locMain["status_preparing"] : "Подготовка к скачиванию...";
 
-            string dlFormat = "";
-            string mergeArg = "";
+            // ─── Считываем состояние чекбокса метаданных ─────────────────────
+            bool embedMeta = EmbedMetadataCheckBox.IsChecked == true;
+
+            string dlFormat  = "";
+            string mergeArg  = "";
+            // ─── Аргументы для метаданных ─────────────────────────────────────
+            // --embed-thumbnail  — вшивает обложку в файл (через AtomicParsley для MP3/M4A или ffmpeg для MP4)
+            // --embed-metadata   — вшивает название, автора, описание и т.п. тэги
+            // --embed-chapters   — главы (если есть)
+            string metaArgs  = embedMeta
+                ? "--embed-thumbnail --embed-metadata --embed-chapters"
+                : "";
+
             var selectedSetting = (ComboBoxItem)SettingsComboBox.SelectedItem;
             string tag = selectedSetting.Tag.ToString();
-            bool isVideoOnly = VideoOnlyCheckBox.IsChecked == true;
-            string audioPart = isVideoOnly ? "" : "+bestaudio[ext=m4a]";
+
+            bool isVideoOnly  = VideoOnlyCheckBox.IsChecked == true;
+            string audioPart  = isVideoOnly ? "" : "+bestaudio[ext=m4a]";
             string bestFallback = isVideoOnly ? "/bestvideo" : "/best[ext=mp4]";
 
             if (RadioVideo.IsChecked == true)
@@ -496,6 +470,10 @@ namespace YT_DLP_GUI
                 {
                     dlFormat = "bestaudio";
                     mergeArg = "-x --audio-format mp3";
+                    // Для MP3 нужен --add-metadata вместо --embed-metadata (совместимость с ID3)
+                    // --embed-thumbnail требует AtomicParsley или ffmpeg >= 4
+                    if (embedMeta)
+                        metaArgs = "--embed-thumbnail --embed-metadata --add-metadata";
                 }
                 else if (tag == "m4a")
                 {
@@ -505,7 +483,10 @@ namespace YT_DLP_GUI
             }
 
             string outputPath = Path.Combine(saveDir, "%(title)s.%(ext)s");
-            string arguments = $"--no-playlist -f \"{dlFormat}\" {mergeArg} -o \"{outputPath}\" \"{url}\"";
+
+            // ─── Итоговая строка аргументов ───────────────────────────────────
+            // Порядок: формат → merge/конвертация → метаданные → выходной путь → url
+            string arguments = $"--no-playlist -f \"{dlFormat}\" {mergeArg} {metaArgs} -o \"{outputPath}\" \"{url}\"";
 
             await RunYtDlpAsync(arguments);
 
@@ -527,12 +508,11 @@ namespace YT_DLP_GUI
                     Arguments = arguments,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
-                    RedirectStandardError = true,
+                    RedirectStandardError  = true,
                     CreateNoWindow = true,
                     StandardOutputEncoding = System.Text.Encoding.UTF8,
-                    StandardErrorEncoding = System.Text.Encoding.UTF8
+                    StandardErrorEncoding  = System.Text.Encoding.UTF8
                 };
-
                 startInfo.EnvironmentVariables["PYTHONIOENCODING"] = "utf-8";
                 startInfo.EnvironmentVariables["PYTHONUTF8"] = "1";
 
@@ -570,7 +550,6 @@ namespace YT_DLP_GUI
                     if (e.Data.Contains("[download]"))
                     {
                         OperationProgressBar.IsIndeterminate = false;
-
                         Match match = Regex.Match(e.Data, @"(\d+\.\d+)%");
                         if (match.Success && double.TryParse(match.Groups[1].Value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out double percent))
                         {
@@ -588,6 +567,12 @@ namespace YT_DLP_GUI
                         OperationProgressBar.IsIndeterminate = true;
                         StatusTextBlock.Text = locMain.ContainsKey("status_ffmpeg") ? locMain["status_ffmpeg"] : "Склейка / Конвертация аудио (FFmpeg)...";
                     }
+                    // ─── статус при встраивании метаданных ───────────────────
+                    else if (e.Data.Contains("[EmbedThumbnail]") || e.Data.Contains("[Metadata]"))
+                    {
+                        OperationProgressBar.IsIndeterminate = true;
+                        StatusTextBlock.Text = "Встраивание метаданных...";
+                    }
                 });
             }
         }
@@ -595,8 +580,7 @@ namespace YT_DLP_GUI
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             var slideOut = new DoubleAnimation(-500, TimeSpan.FromMilliseconds(350)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
-            var slideIn = new DoubleAnimation(0, TimeSpan.FromMilliseconds(350)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
-
+            var slideIn  = new DoubleAnimation(0,    TimeSpan.FromMilliseconds(350)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
             MainTranslate.BeginAnimation(TranslateTransform.XProperty, slideOut);
             SettingsTranslate.BeginAnimation(TranslateTransform.XProperty, slideIn);
         }
@@ -604,8 +588,7 @@ namespace YT_DLP_GUI
         public void CloseSettingsAnimation()
         {
             var slideOut = new DoubleAnimation(500, TimeSpan.FromMilliseconds(350)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
-            var slideIn = new DoubleAnimation(0, TimeSpan.FromMilliseconds(350)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
-
+            var slideIn  = new DoubleAnimation(0,   TimeSpan.FromMilliseconds(350)) { EasingFunction = new CubicEase { EasingMode = EasingMode.EaseInOut } };
             SettingsTranslate.BeginAnimation(TranslateTransform.XProperty, slideOut);
             MainTranslate.BeginAnimation(TranslateTransform.XProperty, slideIn);
         }
@@ -625,7 +608,6 @@ namespace YT_DLP_GUI
             catch { ThisBuild = 1; }
 
             string url = "https://raw.githubusercontent.com/MarkAdderly/YouTube-Downloader-GUI/refs/heads/main/ver.json";
-
             using (HttpClient client = new HttpClient())
             {
                 try
@@ -638,13 +620,12 @@ namespace YT_DLP_GUI
                     if (jsonData != null && jsonData.ContainsKey("build"))
                     {
                         int latestBuild = int.Parse(jsonData["build"]);
-
                         if (latestBuild > ThisBuild)
                         {
                             Application.Current.Dispatcher.Invoke(() =>
                             {
-                                string title = "Update Available";
-                                string msg = locMain.ContainsKey("updatedialog") ? locMain["updatedialog"] : "New version available";
+                                string title     = "Update Available";
+                                string msg       = locMain.ContainsKey("updatedialog") ? locMain["updatedialog"] : "New version available";
                                 string btnUpdate = locMain.ContainsKey("updatebutton") ? locMain["updatebutton"] : "Update";
                                 string btnCancel = locMain.ContainsKey("updatecancel") ? locMain["updatecancel"] : "Cancel";
 
@@ -663,15 +644,13 @@ namespace YT_DLP_GUI
                                     Title = title,
                                     Content = content,
                                     PrimaryButtonText = btnUpdate,
-                                    CloseButtonText = btnCancel,
-                                    DefaultButton = iNKORE.UI.WPF.Modern.Controls.ContentDialogButton.Primary
+                                    CloseButtonText   = btnCancel,
+                                    DefaultButton     = iNKORE.UI.WPF.Modern.Controls.ContentDialogButton.Primary
                                 };
 
                                 _ = dialog.ShowAsync().ContinueWith(t => {
                                     if (t.Result == iNKORE.UI.WPF.Modern.Controls.ContentDialogResult.Primary)
-                                    {
                                         Process.Start(new ProcessStartInfo("https://adderly.top/YouTubeDownloader") { UseShellExecute = true });
-                                    }
                                 });
                             });
                         }

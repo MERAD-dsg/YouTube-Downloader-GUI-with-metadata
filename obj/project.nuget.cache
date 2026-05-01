@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "dgSpecHash": "+TapdxGt8hY=",
+  "success": true,
+  "projectFilePath": "c:\\Users\\User\\Documents\\Yt-dlp-gui-metadata\\YouTube-Downloader-GUI-with-metadata\\YT-DLP-GUI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\User\\.nuget\\packages\\inkore.ui.wpf\\1.2.8\\inkore.ui.wpf.1.2.8.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\inkore.ui.wpf.modern\\0.10.2.1\\inkore.ui.wpf.modern.0.10.2.1.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\micawpf\\6.3.2\\micawpf.6.3.2.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\micawpf.core\\6.3.2\\micawpf.core.6.3.2.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\micawpfruntimecomponent\\1.1.9\\micawpfruntimecomponent.1.1.9.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\modernwpfui\\0.9.6\\modernwpfui.0.9.6.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\newtonsoft.json\\13.0.4\\newtonsoft.json.13.0.4.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.26\\microsoft.netcore.app.ref.8.0.26.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.26\\microsoft.windowsdesktop.app.ref.8.0.26.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.26\\microsoft.aspnetcore.app.ref.8.0.26.nupkg.sha512",
+    "C:\\Users\\User\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.26\\microsoft.netcore.app.host.win-x64.8.0.26.nupkg.sha512"
+  ],
+  "logs": []
+}

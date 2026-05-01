@@ -46,5 +46,17 @@ namespace YT_DLP_GUI.Properties {
                 this["savedFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool embedMetadata {
+            get {
+                return ((bool)(this["embedMetadata"]));
+            }
+            set {
+                this["embedMetadata"] = value;
+            }
+        }
     }
 }

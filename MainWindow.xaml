@@ -7,7 +7,7 @@
         xmlns:controls="clr-namespace:MicaWPF.Controls;assembly=MicaWPF"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         mc:Ignorable="d" ui:ThemeManager.RequestedTheme="Dark"
-        Title="YouTube Downloader" Height="650" Width="500"
+        Title="YouTube Downloader" Height="685" Width="500"
         d:Background="#202020"
         SystemBackdropType="Tabbed" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize"
         Topmost="False">
@@ -37,6 +37,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <!-- НОВАЯ строка: чекбокс метаданных -->
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
@@ -54,7 +56,6 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBox x:Name="UrlTextBox" Grid.Column="0" ui:ControlHelper.PlaceholderText="https://www.youtube.com/watch?v=..." Height="36" VerticalContentAlignment="Center" TextChanged="UrlTextBox_TextChanged"/>
-
                         <controls:Button x:Name="PasteButton" Grid.Column="1" Width="36" Height="36" Margin="5,0,0,0" Visibility="Collapsed" Click="PasteButton_Click" Background="#33FFFFFF" ToolTip="Вставить ссылку из буфера">
                             <ui:SymbolIcon Symbol="Paste"/>
                         </controls:Button>
@@ -111,14 +112,34 @@
                     </StackPanel>
                 </StackPanel>
 
-                <Grid Grid.Row="6" VerticalAlignment="Bottom" Margin="0,0,0,8">
+                <!-- ═══════════════════════════════════════════════════════════ -->
+                <!--  НОВЫЙ БЛОК: чекбокс "Добавить метаданные"                -->
+                <!-- ═══════════════════════════════════════════════════════════ -->
+                <Border Grid.Row="6" Margin="0,0,0,12"
+                        Background="#18FFFFFF" CornerRadius="6"
+                        BorderBrush="#28FFFFFF" BorderThickness="1">
+                    <CheckBox x:Name="EmbedMetadataCheckBox"
+                              IsChecked="True"
+                              Margin="10,8"
+                              VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Symbol="Tag" Margin="0,0,8,0" Opacity="0.75"/>
+                            <TextBlock x:Name="MetadataLabel"
+                                       Text="Добавить метаданные (обложка, название, автор)"
+                                       FontWeight="Medium" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </CheckBox>
+                </Border>
+                <!-- ═══════════════════════════════════════════════════════════ -->
+
+                <Grid Grid.Row="7" VerticalAlignment="Bottom" Margin="0,0,0,8">
                     <StackPanel>
                         <TextBlock x:Name="StatusTextBlock" Text="Готов к работе" TextAlignment="Center" FontSize="14" Opacity="0.7" TextWrapping="Wrap" Margin="0,0,0,5"/>
                         <ProgressBar x:Name="OperationProgressBar" Height="10" HorizontalAlignment="Stretch" Value="0" Maximum="100" IsIndeterminate="False" ui:ControlHelper.CornerRadius="5"/>
                     </StackPanel>
                 </Grid>
 
-                <StackPanel Grid.Row="7" Margin="0,0,0,20">
+                <StackPanel Grid.Row="8" Margin="0,0,0,20">
                     <controls:Button x:Name="DownloadButton" Content="НАЧАТЬ ЗАГРУЗКУ" Height="50" FontWeight="Bold" HorizontalAlignment="Stretch" ui:ControlHelper.CornerRadius="8" Click="DownloadButton_Click"/>
                 </StackPanel>
             </Grid>
@@ -143,6 +164,5 @@
                 <TranslateTransform x:Name="SettingsTranslate" X="500"/>
             </Frame.RenderTransform>
         </Frame>
-
     </Grid>
 </controls:MicaWindow>
