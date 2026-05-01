@@ -11,6 +11,7 @@ A beautiful and user-friendly GUI implementation of yt-dlp, featuring a sleek pr
 * Developed in **Visual Studio 2026**.
 * Powered by **.NET Core 8.0**.
 * Open source for the community.
+* Now can parse metadata (thumbnail, author, title)
 
 ---
 
