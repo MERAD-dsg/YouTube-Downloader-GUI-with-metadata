@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyCopyrightAttribute("MarkAdderly")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9f0fbc4a59d8004a0572951184a5ba95f68b6dac")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9cc1d17b38fc7b551eb8bd3c9c84315f7654c0d7")]
 [assembly: System.Reflection.AssemblyProductAttribute("YT-DLP-GUI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("YT-DLP-GUI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0")]

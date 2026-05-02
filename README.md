@@ -1,173 +1,214 @@
-# YouTube Downloader GUI
-
-![Main Preview](readmeIMG/en.png)
-
-**The Best YouTube Video Downloader.**
-A beautiful and user-friendly GUI implementation of yt-dlp, featuring a sleek preview of the video being downloaded. With its clean design and no unnecessary features, you can download your favorite videos quickly and efficiently - without wasting time. Translations into the world's most popular languages ​​ensure accessibility for the widest possible user base.
-
-### Technical Details
-* Based on **yt-dlp**: [github.com/yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp)
-* Uses **ffmpeg** libraries (must be located inside the application folder).
-* Developed in **Visual Studio 2026**.
-* Powered by **.NET Core 8.0**.
-* Open source for the community.
-* Now can parse metadata (thumbnail, author, title)
+# Патч: добавление метаданных в YouTube Downloader GUI
+### Проект: [MarkAdderly/YouTube-Downloader-GUI](https://github.com/MarkAdderly/YouTube-Downloader-GUI)
 
 ---
 
-## 🇷🇺 Russian (Русский) <a name="russian"></a>
-**Лучший загрузчик видео с YouTube.**
+## Что изменено
 
-Красивая и удобная реализация графического интерфейса (GUI) для yt-dlp с элегантным предпросмотром загружаемого видео. Благодаря лаконичному дизайну и отсутствию лишних функций вы сможете скачивать любимые видео быстро и эффективно, не теряя времени. Перевод на самые популярные языки мира обеспечивает доступность для максимально широкого круга пользователей.
+В оригинальное приложение добавлена одна функция — **встраивание метаданных в скачанный файл**.
 
-![Russian Preview](readmeIMG/ru.png)
+Новый элемент интерфейса — галочка под блоком «Настройки загрузки»:
 
-### Технические подробности
-* Основан на **yt-dlp**: [github.com/yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp)
-* Использует библиотеки **ffmpeg**, которые должны лежать внутри папки с программой.
-* Проект разработан в **Visual Studio 2026**.
-* Работает на платформе **.NET Core 8.0**.
-* Открытый исходный код для сообщества.
-* Теперь может парсить метаданные (обложка, автор, название).
+```
+☑  Добавить метаданные (обложка, название, автор)
+```
+
+Когда галочка **включена**, `yt-dlp` получает флаги:
+- `--embed-thumbnail` — вшивает обложку (картинку трека/видео) прямо в файл
+- `--embed-metadata` — вшивает ID3/MP4-тэги: название, автор, альбом, год и т.д.
+- `--embed-chapters` — вшивает главы (для видео с таймстампами)
+
+Для **MP3** дополнительно добавляется `--add-metadata` для совместимости с ID3v2.
+
+Состояние галочки **сохраняется** между сессиями через `Properties.Settings`.
+
+---
+
+## Файлы патча
+
+| Файл | Что изменено |
+|---|---|
+| `MainWindow.xaml` | Добавлен `<CheckBox x:Name="EmbedMetadataCheckBox">` в Grid.Row="6"; высота окна увеличена с 650 до 685 |
+| `MainWindow.xaml.cs` | Чтение/сохранение настройки `embedMetadata`; формирование `metaArgs`; обработчик строки `[EmbedThumbnail]`/`[Metadata]` в прогрессе; поддержка `music.youtube.com` в `IsYouTubeUrl` |
+| `Properties/Settings.settings` | Добавлено поле `embedMetadata` (тип `bool`, значение по умолчанию `True`) |
 
 ---
 
-## Language Selection / Выбор языка / 语言
+## Как применить патч
 
-<details>
-<summary><b>🇨🇳 Chinese (简体中文)</b></summary>
-<a name="chinese"></a>
+### 1. Клонировать репозиторий
 
-**优秀的 YouTube 视频下载器**
-一个美观且用户友好的 yt-dlp 图形界面 (GUI) 实现，具有正在下载视频的精美预览功能。 凭借其整洁的设计 и 精简的功能，您可以快速高效地下载喜爱的视频，无需浪费时间。
+```bash
+git clone https://github.com/MarkAdderly/YouTube-Downloader-GUI.git
+cd YouTube-Downloader-GUI
+```
 
-![Chinese Preview](readmeIMG/cn.png)
+### 2. Заменить файлы
 
-### 技术细节
-* 基于 **yt-dlp**: [github.com/yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp)
-* 使用 **ffmpeg** 库（必须位于程序文件夹内）。
-* 在 **Visual Studio 2026** 中开发。
-* 运行于 **.NET Core 8.0** 平台。
-* 对社区开放源代码。
-</details>
+Скопируй из этой папки:
 
-<details>
-<summary><b>🇺🇦 Ukrainian (Українська)</b></summary>
-<a name="ukrainian"></a>
+```
+MainWindow.xaml        →  <корень проекта>/MainWindow.xaml
+MainWindow.xaml.cs     →  <корень проекта>/MainWindow.xaml.cs
+Settings.settings      →  <корень проекта>/Properties/Settings.settings
+```
 
-**Найкращий завантажувач відео з YouTube.**
-Красива та зручна реалізація графічного інтерфейсу (GUI) для yt-dlp з елегантним попереднім переглядом відео, що завантажується. Лаконічний дизайн та швидка робота.
-
-![Ukrainian Preview](readmeIMG/uk.png)
-
-### Технічні подробиці
-* Основано на **yt-dlp**: [github.com/yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp)
-* Використовує бібліотеки **ffmpeg**, які мають знаходитися всередині папки з програмою.
-* Проєкт розроблено у **Visual Studio 2026**.
-* Працює на платформі **.NET Core 8.0**.
-* Відкритий вихідний код для спільноти.
-</details>
-
-<details>
-<summary><b>🇪🇸 Spanish (Español)</b></summary>
-<a name="spanish"></a>
-
-**El mejor descargador de videos de YouTube.**
-Una implementación de interfaz gráfica (GUI) de yt-dlp, hermosa y fácil de usar, que incluye una vista previa elegante del video en descarga. Con su diseño limpio и sin funciones innecesarias, puedes descargar tus videos favoritos de manera rápida и eficiente, sin perder el tiempo.
-
-![Spanish Preview](readmeIMG/es.png)
-
-### Detalles Técnicos
-* Basado en **yt-dlp**: [github.com/yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp)
-* Utiliza librerías **ffmpeg** (deben estar dentro de la carpeta del programa).
-* Proyecto desarrollado en **Visual Studio 2026**.
-* Funciona en la plataforma **.NET Core 8.0**.
-* Código fuente abierto para la comunidad.
-</details>
-
-<details>
-<summary><b>🇩🇪 German (Deutsch)</b></summary>
-<a name="german"></a>
-
-**Der beste YouTube-Video-Downloader.**
-Eine wunderschöne und benutzerfreundliche GUI-Implementierung von yt-dlp mit einer eleganten Vorschau des heruntergeladenen Videos. Mit seinem klaren Design и ohne unnötige Funktionen können Sie Ihre Lieblingsvideos schnell und effizient herunterladen.
-
-![German Preview](readmeIMG/de.png)
-
-### Technische Details
-* Basierend auf **yt-dlp**: [github.com/yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp)
-* Verwendet **ffmpeg**-Bibliotheken (müssen sich im Programmordner befinden).
-* Projekt entwickelt in **Visual Studio 2026**.
-* Läuft auf der **.NET Core 8.0** Plattform.
-* Open Source für die Community.
-</details>
-
-<details>
-<summary><b>🇯🇵 Japanese (日本語)</b></summary>
-<a name="japanese"></a>
-
-**最高のYouTubeビデオダウンローダー**
-美しく使いやすいyt-dlpのGUI実装。ダウンロード中のビデオをスマートにプレビューできます。洗練されたデザインと無駄のない機能により、時間を無駄にすることなく、お気に入りのビデオを迅速かつ効率的にダウンロードできます。
-
-![Japanese Preview](readmeIMG/ja.png)
-
-### 技術的な詳細
-* **yt-dlp** ベース: [github.com/yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp)
-* **ffmpeg** ライブラリを使用（プログラムフォルダ内に配置する必要があります）。
-* **Visual Studio 2026** で開発。
-* **.NET Core 8.0** プラットフォームで動作。
-* コミュニティ向けのオープンソース。
-</details>
-
-<details>
-<summary><b>🇮🇳 Hindi (हिन्दी)</b></summary>
-<a name="hindi"></a>
-
-**सबसे अच्छा YouTube वीडियो डाउनलोडर।**
-yt-dlp का एक सुंदर और उपयोगकर्ता के अनुकूल GUI कार्यान्वयन, जिसमें डाउनलोड किए जा रहे वीडियो का एक शानदार पूर्वावलोकन (preview) है। इसके स्पष्ट डिज़ाइन и बिना किसी अनावश्यक सुविधाओं के, आप अपने पसंदीदा वीडियो को जल्दी и कुशलता से डाउनलोड कर सकते हैं।
-
-![Hindi Preview](readmeIMG/hi.png)
-
-### तकनीकी विवरण
-* **yt-dlp** पर आधारित: [github.com/yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp)
-* **ffmpeg** लाइब्रेरी का उपयोग करता है (प्रोग्राम फ़ोल्डर के अंदर होना चाहिए)।
-* **Visual Studio 2026** में विकसित।
-* **.NET Core 8.0** प्लेटफॉर्म पर चलता है।
-* समुदाय के लिए ओपन सोर्स।
-</details>
-
-<details>
-<summary><b>🇹🇷 Turkish (Türkçe)</b></summary>
-<a name="turkish"></a>
-
-**En İyi YouTube Video İndirici.**
-İndirilen videonun şık bir önizlemesini sunan, yt-dlp'nin güzel ve kullanıcı dostu bir GUI uygulaması. Sade tasarımı и gereksiz özelliklerden arındırılmış yapısı sayesinde, en sevdiğiniz videoları zaman kaybetmeden hızlı ve verimli bir şekilde indirebilirsiniz.
-
-![Turkish Preview](readmeIMG/tr.png)
-
-### Teknik Detaylar
-* **yt-dlp** tabanlı: [github.com/yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp)
-* **ffmpeg** kitaplıklarını kullanır (program klasörünün içinde olmalıdır).
-* **Visual Studio 2026**'da geliştirildi.
-* **.NET Core 8.0** platformunda çalışır.
-* Topluluk için açık kaynak kodlu.
-</details>
-
-<details>
-<summary><b>🇵🇭 Tagalog (Filipino)</b></summary>
-<a name="tagalog"></a>
-
-**Ang Pinakamahusay na YouTube Video Downloader.**
-Isang maganda и user-friendly na GUI implementation ng yt-dlp. Mabilis и mahusay na pag-download ng iyong mga paboritong video nang hindi nagsasayang ng oras.
-
-![Tagalog Preview](readmeIMG/tl.png)
-
-### Mga Teknikal na Detalye
-* Nakabase sa **yt-dlp**: [github.com/yt-dlp/yt-dlp](https://github.com/yt-dlp/yt-dlp)
-* Gumagamit ng **ffmpeg** libraries (dapat nasa loob ng program folder).
-* Dinevelop sa **Visual Studio 2026**.
-* Tumatakbo sa **.NET Core 8.0** platform.
-* Open source para sa komunidad.
-</details>
+> **Важно:** после замены `Settings.settings` нужно пересобрать автогенерируемый
+> `Settings.Designer.cs`. Visual Studio сделает это автоматически при открытии проекта.
+> Если используешь командную строку — достаточно просто запустить сборку (`dotnet build`),
+> MSBuild вызовет `SettingsSingleFileGenerator` самостоятельно.
 
 ---
+
+## Сборка проекта
+
+### Требования
+
+| Инструмент | Версия | Откуда |
+|---|---|---|
+| .NET SDK | **8.0+** | https://dotnet.microsoft.com/download |
+| Visual Studio | **2022** (v17.8+) с воркспейсом «.NET Desktop Development» | https://visualstudio.microsoft.com |
+
+---
+
+### Вариант A — через Visual Studio (рекомендуется)
+
+1. Открой `YT-DLP-GUI.slnx` в Visual Studio 2022.
+2. В Solution Explorer → ПКМ на `Properties/Settings.settings` → **Run Custom Tool** (пересоздаст `Settings.Designer.cs`).
+3. Нажми **Build → Publish Selection**.
+4. В диалоге Publish выбери **Folder**, затем настрой:
+   - **Deployment mode:** `Self-contained` ✅
+   - **Target runtime:** `win-x64`
+   - **Produce single file:** ✅
+5. Нажми **Publish**.
+
+Результат появится в папке вида `bin\Release\net8.0-windows\win-x64\publish\`.
+
+---
+
+### Вариант B — командная строка (без Visual Studio)
+
+```powershell
+# В корне проекта:
+dotnet publish YT-DLP-GUI.csproj `
+  -c Release `
+  -r win-x64 `
+  --self-contained true `
+  -p:PublishSingleFile=true `
+  -p:IncludeNativeLibrariesForSelfExtract=true `
+  -o ./publish
+```
+
+Готовый `YT-DLP-GUI.exe` появится в папке `./publish`.
+
+---
+
+## Структура папки с готовым приложением
+
+Приложение ищет `yt-dlp.exe` и `ffmpeg` **рядом с собой** (в той же директории).
+Итоговая папка должна выглядеть так:
+
+```
+📁 YouTubeDownloader\
+├── YT-DLP-GUI.exe          ← само приложение (сборка выше)
+├── yt-dlp.exe              ← https://github.com/yt-dlp/yt-dlp/releases/latest
+├── ffmpeg.exe              ← https://www.gyan.dev/ffmpeg/builds/ (ffmpeg-release-essentials.zip)
+├── ffprobe.exe             ← идёт в одном архиве с ffmpeg
+└── AtomicParsley.exe       ← нужен для встраивания обложки в MP3
+                               https://github.com/wez/atomicparsley/releases/latest
+```
+
+> `AtomicParsley` нужен только для формата MP3 (ID3 thumbnail).
+> Для M4A и MP4 ffmpeg справляется сам.
+
+### Откуда скачать утилиты
+
+| Утилита | Ссылка |
+|---|---|
+| yt-dlp.exe | https://github.com/yt-dlp/yt-dlp/releases/latest → `yt-dlp.exe` |
+| ffmpeg + ffprobe | https://www.gyan.dev/ffmpeg/builds/ → `ffmpeg-release-essentials.zip` → папка `bin\` |
+| AtomicParsley.exe | https://github.com/wez/atomicparsley/releases/latest → `AtomicParsley-windows-x86_64.zip` |
+
+---
+
+## Создание установщика (опционально)
+
+Для создания профессионального установщика `.exe` используй **Inno Setup** — бесплатный и простой инструмент.
+
+### 1. Установи Inno Setup
+
+Скачай с https://jrsoftware.org/isdl.php и установи.
+
+### 2. Создай скрипт `installer.iss`
+
+Создай файл `installer.iss` рядом с папкой `publish\`:
+
+```iss
+[Setup]
+AppName=YouTube Downloader GUI
+AppVersion=1.0.0
+AppPublisher=MarkAdderly
+DefaultDirName={autopf}\YouTubeDownloaderGUI
+DefaultGroupName=YouTube Downloader GUI
+OutputBaseFilename=YouTubeDownloaderGUI_Setup
+Compression=lzma2
+SolidCompression=yes
+WizardStyle=modern
+ArchitecturesInstallIn64BitMode=x64compatible
+
+[Languages]
+Name: "russian"; MessagesFile: "compiler:Languages\Russian.isl"
+Name: "english"; MessagesFile: "compiler:Default.isl"
+
+[Tasks]
+Name: "desktopicon"; Description: "Создать ярлык на рабочем столе"; GroupDescription: "Дополнительно:"
+
+[Files]
+; Основное приложение
+Source: "publish\YT-DLP-GUI.exe"; DestDir: "{app}"; Flags: ignoreversion
+
+; Утилиты (должны лежать рядом с приложением)
+Source: "tools\yt-dlp.exe";       DestDir: "{app}"; Flags: ignoreversion
+Source: "tools\ffmpeg.exe";       DestDir: "{app}"; Flags: ignoreversion
+Source: "tools\ffprobe.exe";      DestDir: "{app}"; Flags: ignoreversion
+Source: "tools\AtomicParsley.exe"; DestDir: "{app}"; Flags: ignoreversion
+
+[Icons]
+Name: "{group}\YouTube Downloader GUI"; Filename: "{app}\YT-DLP-GUI.exe"
+Name: "{group}\Удалить YouTube Downloader GUI"; Filename: "{uninstallexe}"
+Name: "{autodesktop}\YouTube Downloader GUI"; Filename: "{app}\YT-DLP-GUI.exe"; Tasks: desktopicon
+
+[Run]
+Filename: "{app}\YT-DLP-GUI.exe"; Description: "Запустить YouTube Downloader GUI"; Flags: nowait postinstall skipifsilent
+```
+
+### 3. Подготовь папки
+
+```
+📁 (рядом с installer.iss)
+├── 📁 publish\
+│   └── YT-DLP-GUI.exe
+├── 📁 tools\
+│   ├── yt-dlp.exe
+│   ├── ffmpeg.exe
+│   ├── ffprobe.exe
+│   └── AtomicParsley.exe
+└── installer.iss
+```
+
+### 4. Скомпилируй установщик
+
+- Открой `installer.iss` в Inno Setup Compiler
+- Нажми **Build → Compile** (или `Ctrl+F9`)
+- Готовый файл `YouTubeDownloaderGUI_Setup.exe` появится в папке `Output\`
+
+---
+
+## Итог
+
+После всех шагов у тебя будет:
+
+- ✅ `YouTubeDownloaderGUI_Setup.exe` — установщик с встроенными `yt-dlp`, `ffmpeg` и `AtomicParsley`
+- ✅ Галочка «Добавить метаданные (обложка, название, автор)» в интерфейсе
+- ✅ Поддержка `music.youtube.com` ссылок (кнопка вставки из буфера)
+- ✅ Состояние галочки сохраняется между запусками
